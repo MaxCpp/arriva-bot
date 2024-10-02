@@ -1,0 +1,51 @@
+:root {
+  --colorBlack: #202020;
+  --colorGray: #808080;
+  --colorLightGray: #ECECEC;
+  --colorWhite: #F4F4F4;
+  --colorRed: #E74928;
+  --colorGreen: #31D816;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--colorWhite);
+  font-family: 'Hind Siliguri', sans-serif;
+  //font-family: 'Fira Sans', sans-serif;
+  font-size: 16px;
+  line-height: 22px;
+  color: var(--colorBlack);
+}
+
+.container-1440 {
+  max-width: 1440px;
+  padding-inline: 56px;
+  margin-inline: auto;
+}
+
+.title {
+  color: var(--colorBlack);
+  font-weight: 400;
+}
+
+.title_size_62 {
+  font-size: 62px;
+  line-height: 52px;
+  letter-spacing: -1.24px;
+}
+
+.title_size_42 {
+  font-size: 42px;
+  line-height: 37px;
+  letter-spacing: -0.84px;
+}
+
+.title_size_32 {
+  font-size: 32px;
+  line-height: 28px;
+  letter-spacing: -0.64px;
+}
+
