@@ -10,13 +10,12 @@
 	},
 	"devDependencies": {
 		"@nuxt/devtools": "latest",
-		"nuxt": "3.8.0",
-		"sass": "^1.69.5",
-		"vue": "^3.3.7",
+		"@vue-leaflet/vue-leaflet": "^0.10.1",
+		"leaflet": "^1.9.4",
+		"nuxt": "^3.13.2",
+		"sass": "^1.79.4",
+		"vue": "^3.5.10",
 		"vue-leaflet-rotate-marker": "^0.1.0",
-		"vue-router": "^4.2.5"
-	},
-	"dependencies": {
-		"@nuxtjs/leaflet": "^1.2.3"
+		"vue-router": "^4.4.5"
 	}
 }

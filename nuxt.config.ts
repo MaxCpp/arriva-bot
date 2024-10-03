@@ -45,9 +45,9 @@ export default defineNuxtConfig({
 		},
 	],
 
-	modules: [
-		'@nuxtjs/leaflet'
-	],
+	// modules: [
+	// 	'@nuxtjs/leaflet'
+	// ],
 
 	app: {
 		head: {
