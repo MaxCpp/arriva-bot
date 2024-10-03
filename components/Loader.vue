@@ -19,8 +19,8 @@ export default {
 .lds-ellipsis div {
     position: absolute;
     top: 20px;
-    width: 10px;
-    height: 10px;
+    width: 16px;
+    height: 16px;
     border-radius: 50%;
     background: #228abb;
     animation-timing-function: cubic-bezier(0, 1, 1, 0);

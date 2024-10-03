@@ -2,18 +2,34 @@
 import {defineComponent} from 'vue'
 
 export default defineComponent({
-    name: "default"
+    name: "default",
+    mounted() {
+        if (process.client && process.env.APP_ENV === 'production') {
+            this.tg = window.Telegram.WebApp;
+
+            // Уведомляем Telegram, что Web App готово
+            this.tg.ready();
+
+            // Разворачиваем на полный экран
+            this.tg.expand();
+
+            // Например, можно установить цвет темы Web App
+            this.tg.setBackgroundColor("#f5f5f5");
+
+            // Дополнительная логика или методы взаимодействия с Telegram WebApp API
+        }
+    }
 })
 </script>
 
 <template>
     <div class="app">
-        <nav class="navigation">
-            <NuxtLink to="/">Main</NuxtLink>
-<!--            <NuxtLink to="/work">Work</NuxtLink>-->
-<!--            <NuxtLink to="/children">Children</NuxtLink>-->
-            <NuxtLink to="/map">Map</NuxtLink>
-        </nav>
+<!--        <nav class="navigation">-->
+<!--            <NuxtLink to="/">Main</NuxtLink>-->
+<!--&lt;!&ndash;            <NuxtLink to="/work">Work</NuxtLink>&ndash;&gt;-->
+<!--&lt;!&ndash;            <NuxtLink to="/children">Children</NuxtLink>&ndash;&gt;-->
+<!--            <NuxtLink to="/map">Map</NuxtLink>-->
+<!--        </nav>-->
     
         <NuxtPage/>
     </div>

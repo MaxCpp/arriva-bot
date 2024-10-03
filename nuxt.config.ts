@@ -12,10 +12,11 @@ console.log('BACKEND_URL:', BACKEND_URL);
 export default defineNuxtConfig({
 	// compatibilityDate: "2024-10-03",
 	devtools: {enabled: false},
-	routeRules: {
-		'/': { prerender: true },
-		'/map': { ssr: false },
-	},
+	ssr: false,
+	// routeRules: {
+	// 	'/': { prerender: true },
+	// 	'/map': { ssr: false },
+	// },
 	runtimeConfig: {
 		public: {
 			HOST_FRONTEND: FRONTEND_URL,
@@ -117,6 +118,11 @@ export default defineNuxtConfig({
 				// 	color: '#5bbad5',
 				// },
 			],
+			script: [
+				{
+					src: 'https://telegram.org/js/telegram-web-app.js'
+				}
+			]
 		},
 	},
 
