@@ -1,6 +1,28 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+const isDev = process.env.APP_ENV === 'development';
+const isStaging = process.env.APP_ENV === 'staging';
+const isProd = process.env.APP_ENV === 'production';
+const FRONTEND_URL = isStaging ? 'https://staging.18peaches.com' : (isProd ? 'https://18peaches.com' : 'http://localhost:3000');
+const BACKEND_URL = isStaging ? 'https://staging-api.18peaches.com': isProd ? 'https://api.18peaches.com' : 'http://localhost:3010';
+console.log('APP_ENV:', process.env.APP_ENV);
+console.log('NODE_ENV:', process.env.NODE_ENV);
+console.log('FRONTEND_URL:', FRONTEND_URL);
+console.log('BACKEND_URL:', BACKEND_URL);
+
 export default defineNuxtConfig({
-	devtools: {enabled: true},
+	// compatibilityDate: "2024-10-03",
+	devtools: {enabled: false},
+	routeRules: {
+		'/': { prerender: true },
+		'/map': { ssr: false },
+	},
+	runtimeConfig: {
+		public: {
+			HOST_FRONTEND: FRONTEND_URL,
+			HOST_BACKEND: BACKEND_URL,
+			API_BACKEND_URL: `${BACKEND_URL}/api/v1`,
+		}
+	},
 	vite: {
 		css: {
 			preprocessorOptions: {
@@ -24,7 +46,7 @@ export default defineNuxtConfig({
 	],
 
 	modules: [
-		'nuxt3-leaflet'
+		'@nuxtjs/leaflet'
 	],
 
 	app: {

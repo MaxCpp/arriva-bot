@@ -1,208 +1,95 @@
-<script lang="ts">
+<script>
 import {defineComponent} from 'vue'
 
 export default defineComponent({
-    name: "index",
+    name: "page-index",
     data() {
         return {
-            timeframe: 1,
-            numberMinutesFullDay: 60 * 24,
-            spheres: [
-                {
-                    name: 'Health',
-                    color: '#c8e6ff',
-                    // color: '#d2e7f4',
-                    content: [
-                        {
-                            name: 'Sleep',
-                            color: '#959bee',
-                            value: 480
-                        },
-                        {
-                            name: 'Hiking',
-                            value: 60
-                        },
-                        {
-                            name: 'Gymnastics',
-                            value: 30
-                        }
-                    ]
-                },
-                {
-                    name: 'Work',
-                    color: '#ffc894',
-                    content: [
-                        {
-                            name: '1ATH',
-                            value: 480
-                        },
-                        {
-                            name: 'Totaling',
-                            value: 30
-                        }
-                    ]
-                },
-                // {
-                //     name: 'Family ',
-                //     color: '#fbeb1f',
-                //     content: [
-                //         {
-                //             name: 'Children',
-                //             value: 100
-                //         },
-                //         {
-                //             name: 'Cooking',
-                //             value: 20
-                //         }
-                //     ]
-                // },
-                // {
-                //     name: 'Music',
-                //     color: '#b2eba7',
-                //     // color: '#c0e7c1',
-                //     content: [
-                //         {
-                //             name: 'Theory',
-                //             value: 10
-                //         },
-                //         {
-                //             name: 'Practice',
-                //             value: 15
-                //         }
-                //     ]
-                // },
-                // {
-                //     name: 'Languages',
-                //     color: '#ff7070',
-                //     content: [
-                //         {
-                //             name: 'English',
-                //             value: 15
-                //         },
-                //         {
-                //             name: 'Slovenian',
-                //             value: 15
-                //         }
-                //     ]
-                // },
-            ]
+            tg: null,
+            geojsonData: null,
+            interval: null,
+            iss: {
+                location: null
+            },
+            path: [],
+            // tleLine1: '1 25544U 98067A   19156.50900463  .00003075  00000-0  59442-4 0  9992',
+            // tleLine2: '2 25544  51.6433  59.2583 0008217  16.4489 347.6017 15.51174618173442',
+            line1: "1 25544U 98067A   24128.06194722  .00013194  00000+0  23083-3 0  9994",
+            line2: "2 25544  51.6397 159.2957 0003628 145.8725  64.6623 15.50961316452164",
         }
     },
-    computed: {
-        transformSpheres() {
-            const maxSquares = Math.ceil(this.numberMinutesFullDay / this.timeframe)
-            const arrSquares = new Array()
-
-            for (const sphere of this.spheres) {
-                for (const theme of sphere.content) {
-
-                    const countSquaresTheme = Math.ceil(theme.value / this.timeframe)
-
-                    for (let i = 0; i < countSquaresTheme; i++) {
-                        arrSquares.push({
-                            name: theme.name,
-                            color: theme.color || sphere.color,
-                            min: theme.value
-                        })
-                    }
-                }
-            }
-            console.log('maxSquares', maxSquares)
-            const diff = (maxSquares - arrSquares.length) * this.timeframe;
-
-            while (arrSquares.length < maxSquares) {
-                arrSquares.push({
-                    name: 'Empty time ',
-                    min: diff
-                });
-            }
-            
-            return arrSquares;
-        }
+    mounted() {
+        // if (process.client && process.env.APP_ENV === 'development') {
+        //     this.tg = window.Telegram.WebApp;
+        //
+        //     // Уведомляем Telegram, что Web App готово
+        //     this.tg.ready();
+        //
+        //     // Разворачиваем на полный экран
+        //     this.tg.expand();
+        //
+        //     // Например, можно установить цвет темы Web App
+        //     this.tg.setBackgroundColor("#f5f5f5");
+        //
+        //     // Дополнительная логика или методы взаимодействия с Telegram WebApp API
+        // }
+        // https://www.youtube.com/watch?v=P9C25Un7xaM
+        // this.init();
+        // this.interval = setInterval(this.fetchLocations, 5000);
     },
     methods: {
-        // onChangeTimeframe(val) {
-        //     console.log('val', val)
-        //     this.timeframe = val;
-        // }
+        async init() {
+            // await this.fetchLocations();
+
+            // if (this.iss.line1) {
+            //     this.path = this.getSatelliteCoordinates(-0.3, 1.5, 0.5);
+            // }
+        },
+        sendData() {
+            // Пример отправки данных в Telegram
+            this.tg.sendData(JSON.stringify({ message: "Hello from Nuxt 3 Web App!" }));
+        }
     }
 })
 </script>
 
 <template>
-    <div class="grid">
-        <div>
-            <div class="header">
-                <h1 class="title_size_32">One day</h1>
-                
-                <select v-model="timeframe">
-                    <option :value="1">One square is 1 min</option>
-                    <option :value="5">One square is 5 min</option>
-                    <option :value="10">One square is 10 min</option>
-                    <option :value="15">One square is 15 min</option>
-                </select>
-            </div>
-            
-            <!--            <div v-for="sphere in spheres" class="sphere" :style="{'background-color': sphere.color}">-->
-            <!--                <div class="sphere__title">{{sphere.name}}</div>-->
-            
-            <!--                <ul class="sphere__content">-->
-            <!--                    <li v-if="sphere?.content"-->
-            <!--                        v-for="sub in sphere.content"-->
-            <!--                        class="sphere__theme">-->
-            <!--                            <div>{{sub.name}}</div>-->
-            <!--                            <div>{{sub.value}}</div>-->
-            <!--                    </li>-->
-            <!--                </ul>-->
-            <!--            </div>-->
-
-            <div class="theme__content" style="padding: 0 20px 10px">
-                <div v-for="(item, index) in transformSpheres"
-                     :key="'day' + index"
-                     :style="{'background-color': item.color}"
-                     :class="{'square_1min': timeframe === 1}"
-                     :title="`${item.name} - ${item.min} min (${(item.min / 60).toFixed(1)} h)`"
-                     class="square"></div>
-            </div>
-            
-            <div v-for="sphere in spheres" class="sphere">
-                <div class="sphere__title">{{sphere.name}}</div>
-                
-                <ul class="sphere__content">
-                    <li v-if="sphere?.content"
-                        v-for="theme in sphere.content"
-                        class="sphere__theme">
-                        <div>{{theme.name}}</div>
-                        <div>{{theme.value}}</div>
-                        <div class="theme__content">
-                            <div v-for="index in Math.ceil(theme.value / timeframe)"
-                                 :key="theme.name+index"
-                                 :style="{'background-color': theme.color || sphere.color}"
-                                 :class="{'square_1min': timeframe === 1}"
-                                 class="square"></div>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-        </div>
-        <div>
-            <h1>Main</h1>
-            <NuxtLink to="/">Main</NuxtLink>
-            <NuxtLink to="/children/">Children</NuxtLink>
-        </div>
-    </div>
+    <main>
+        <client-only>
+<!--            <LMap-->
+<!--                :zoom="2"-->
+<!--                :center="[47.21322, -1.559482]"-->
+<!--                :use-global-leaflet="false"-->
+<!--            >-->
+<!--                <LTileLayer-->
+<!--                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"-->
+<!--                    attribution="&amp;copy; <a href=&quot;https://www.openstreetmap.org/&quot;>OpenStreetMap</a> contributors"-->
+<!--                    layer-type="base"-->
+<!--                    name="OpenStreetMap"-->
+<!--                />-->
+<!--                -->
+<!--    &lt;!&ndash;            <LMarker v-if="iss.location" :lat-lng="iss.location" />&ndash;&gt;-->
+<!--    &lt;!&ndash;            &ndash;&gt;-->
+<!--    &lt;!&ndash;            <LPolyline&ndash;&gt;-->
+<!--    &lt;!&ndash;                v-if="path.length"&ndash;&gt;-->
+<!--    &lt;!&ndash;                :lat-lngs="path"&ndash;&gt;-->
+<!--    &lt;!&ndash;                color="green"&ndash;&gt;-->
+<!--    &lt;!&ndash;            />&ndash;&gt;-->
+<!--    &lt;!&ndash;            <LGeoJson :geojson="geojsonData" />&ndash;&gt;-->
+<!--            </LMap>-->
+        </client-only>
+    </main>
 </template>
 
 <style lang="scss" scoped>
+main {
+    display: flex;
+    //height: 100vh;
+}
 //.grid {
 //    display: grid;
 //    grid-template-columns: 1fr 1fr;
 //}
-.header {
-    display: flex;
-    justify-content: space-between;
-    padding: 20px;
-}
 
 .sphere {
     padding: 10px 0;

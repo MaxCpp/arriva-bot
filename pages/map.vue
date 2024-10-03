@@ -1,11 +1,16 @@
 <script>
 import {defineComponent} from 'vue'
-import { gstime, twoline2satrec, propagate, eciToGeodetic, degreesLong, degreesLat } from 'satellite.js';
+import L from 'leaflet'
+import { LMarkerRotate } from 'vue-leaflet-rotate-marker';
 
 export default defineComponent({
     name: "page-map",
+    components: {
+        LMarkerRotate
+    },
     data() {
         return {
+            geojson: null,
             interval: null,
             iss: {
                 location: null
@@ -18,17 +23,31 @@ export default defineComponent({
         }
     },
     mounted() {
+        // if (process.client && process.env.APP_ENV === 'development') {
+        //     this.tg = window.Telegram.WebApp;
+        //
+        //     // Уведомляем Telegram, что Web App готово
+        //     this.tg.ready();
+        //
+        //     // Разворачиваем на полный экран
+        //     this.tg.expand();
+        //
+        //     // Например, можно установить цвет темы Web App
+        //     this.tg.setBackgroundColor("#f5f5f5");
+        //
+        //     // Дополнительная логика или методы взаимодействия с Telegram WebApp API
+        // }
+        
         // https://www.youtube.com/watch?v=P9C25Un7xaM
-        // this.init();
-        // this.interval = setInterval(this.fetchLocations, 5000);
+        this.refreshLocations();
+
+        this.interval = setInterval(this.refreshLocations, 30000);
     },
     methods: {
-        async init() {
-            await this.fetchTLE();
+        async refreshLocations() {
+            const vehicles = await this.fetchLocations();
 
-            if (this.iss.line1) {
-                this.path = this.getSatelliteCoordinates(-0.3, 1.5, 0.5);
-            }
+            this.geojson = vehicles;
         },
         // getSatelliteCoordinates(startHours, endHours, intervalMinutes) {
         //     console.log('getSatelliteCoordinates', this.iss.line1, this.iss.line2)
@@ -49,25 +68,27 @@ export default defineComponent({
         //
         //     return positions;
         // },
-        async fetchTLE() {
-            const response = await $fetch('https://api.wheretheiss.at/v1/satellites/25544/tles')
-            
-            if (response) {
-                this.iss.line1 = response?.line1;
-                this.iss.line2 = response?.line1;
-            }
-        },
         async fetchLocations() {
             // const response = await $fetch('http://api.open-notify.org/iss-now.json')
             //
             // if (response) {
             //     this.iss.location = [response.iss_position.latitude, response.iss_position.longitude];
             // }
-            const response = await $fetch('https://api.wheretheiss.at/v1/satellites/25544')
-            
+            const response = await $fetch('https://ojpp.si/api/vehicle_locations?active=1&exclude_operators=lpp,marprom')
+
             if (response) {
-                this.iss.location = [response.latitude, response.longitude];
+                return response;
             }
+        },
+        createCustomIcon(feature) {
+            return L.icon({
+                iconUrl: '/images/icon-gps-location.png',
+                iconRetinaUrl: '/images/icon-gps-location@2x.png',
+                iconSize: [36, 36],
+                iconAnchor: [18, 18],
+                popupAnchor: [0, -16],
+                // opacity: feature.properties.opacity // Применяем прозрачность
+            })
         }
     }
 })
@@ -75,9 +96,11 @@ export default defineComponent({
 
 <template>
     <main>
+        <client-only>
         <LMap
-            :zoom="2"
-            :center="[47.21322, -1.559482]"
+            :zoom="12"
+            :center="[45.5149544, 13.63025]"
+            :use-global-leaflet="false"
         >
             <LTileLayer
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -87,20 +110,52 @@ export default defineComponent({
             />
             
 <!--            <LMarker v-if="iss.location" :lat-lng="iss.location" />-->
-<!--            -->
 <!--            <LPolyline-->
 <!--                v-if="path.length"-->
 <!--                :lat-lngs="path"-->
 <!--                color="green"-->
 <!--            />-->
+<!--            <LMarker-->
+<!--                v-for="(feature, index) in features"-->
+<!--                :key="index"-->
+<!--                :lat-lng="[feature.geometry.coordinates[1], feature.geometry.coordinates[0]]"-->
+<!--                :icon="createCustomIcon(feature)"-->
+<!--                :rotation-angle="feature.properties.direction"-->
+<!--            />-->
+<!--            <l-marker-rotate-->
+<!--                :lat-lng="[-3.5, 117]"-->
+<!--                rotationAngle="100"-->
+<!--            />-->
+            <LMarkerRotate
+                v-for="(feature, index) in geojson.features"
+                :key="index"
+                :lat-lng="[feature.geometry.coordinates[1], feature.geometry.coordinates[0]]"
+                :icon="createCustomIcon(feature)"
+                :rotation-angle="feature.properties.direction"
+            >
+                <LTooltip :permanent="true" direction="top" offset="[0, -25]">
+                    {{ feature.properties.operator_id }}
+                </LTooltip>
+            </LMarkerRotate>
+            
+<!--            <LMarkerRotate-->
+<!--                :lat-lng="[-4, 120]"-->
+<!--                rotationOrigin="bottom center"-->
+<!--                :rotationAngle="172"-->
+<!--            >-->
+<!--                <LTooltip>-->
+<!--                    Tooltip-->
+<!--                </LTooltip>-->
+<!--            </LMarkerRotate>-->
         </LMap>
+        </client-only>
     </main>
 </template>
 
 <style lang="scss" scoped>
 main {
     display: flex;
-    height: calc(100vh - 60px);
+    height: 100vh;
 }
 //.grid {
 //    display: grid;

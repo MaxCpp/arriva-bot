@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
 import {defineComponent} from 'vue'
 
 export default defineComponent({
@@ -8,32 +8,32 @@ export default defineComponent({
 
 <template>
     <div class="app">
-        <header class="header">
+        <nav class="navigation">
             <NuxtLink to="/">Main</NuxtLink>
 <!--            <NuxtLink to="/work">Work</NuxtLink>-->
 <!--            <NuxtLink to="/children">Children</NuxtLink>-->
             <NuxtLink to="/map">Map</NuxtLink>
-        </header>
+        </nav>
     
-        <main>
-            <NuxtPage/>
-        </main>
+        <NuxtPage/>
     </div>
 </template>
 
 <style lang="scss" scoped>
 .app {
-    min-height: 100vh;
+    height: 100vh;
 }
 
-.header {
+.navigation {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 9000;
     display: flex;
     gap: 20px;
     height: 60px;
     padding: 20px;
-}
-
-main {
-    padding: 20px;
+    background-color: #fff;
 }
 </style>
